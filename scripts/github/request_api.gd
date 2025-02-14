@@ -3,7 +3,7 @@ class_name RequestAPI extends Node
 var http: HTTPClient = HTTPClient.new()
 var headers: PackedStringArray = [
 		'Content-Type: application/json', 
-		'Authorization: Bearer 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'
+		'Authorization: Bearer <Token>'
 	]
 var is_github_connected = false
 var base_url: String = ''
