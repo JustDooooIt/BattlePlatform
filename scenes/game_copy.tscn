@@ -1,0 +1,244 @@
+[gd_scene load_steps=35 format=4 uid="uid://cfawl6s4otlu5"]
+
+[ext_resource type="Script" path="res://scripts/camera.gd" id="1_kc0ss"]
+[ext_resource type="Texture2D" uid="uid://cq0i76wg1k7um" path="res://resources/map/N44 Map-2015-FINAL-150.jpg" id="2_n021a"]
+[ext_resource type="Texture2D" uid="uid://h7a05g8i6jir" path="res://resources/map/hexagon-1.png" id="3_15sg3"]
+[ext_resource type="Texture2D" uid="uid://b8phlsqg087l8" path="res://resources/map/hexagon-2.png" id="4_fnnsx"]
+[ext_resource type="Script" path="res://scripts/map/hex_map.gd" id="5_b1ec5"]
+[ext_resource type="Script" path="res://scripts/game/player/pipeline.gd" id="6_7vvpu"]
+[ext_resource type="PackedScene" uid="uid://bvsavfcl07m8s" path="res://scenes/piece.tscn" id="7_dmvoh"]
+[ext_resource type="Script" path="res://scripts/game/pieces/base/paramter.gd" id="8_3uwp8"]
+[ext_resource type="Texture2D" uid="uid://bgtlbp7xr0ym0" path="res://resources/pieces/BR-8A-47RDG-B.png" id="9_15mpo"]
+[ext_resource type="Texture2D" uid="uid://dbfg2ssnx1qa5" path="res://resources/pieces/GE-276-986-B.png" id="9_rnsfh"]
+[ext_resource type="Texture2D" uid="uid://b3bg1ndagmj3y" path="res://resources/pieces/BR-27A-1813.png" id="10_arunr"]
+[ext_resource type="Texture2D" uid="uid://blsbjm2243b13" path="res://resources/pieces/GE-276-986.png" id="10_m5cf4"]
+[ext_resource type="Script" path="res://scripts/game/pieces/base/parameters.gd" id="11_you7x"]
+[ext_resource type="Script" path="res://scripts/game/network/network.gd" id="12_u5c2c"]
+[ext_resource type="PackedScene" uid="uid://c6lwtcr08mudq" path="res://scenes/fake_piece.tscn" id="13_bce24"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mlwg2"]
+texture = ExtResource("3_15sg3")
+texture_region_size = Vector2i(122, 141)
+0:0/0 = 0
+1:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nu2co"]
+texture = ExtResource("4_fnnsx")
+texture_region_size = Vector2i(122, 141)
+0:0/next_alternative_id = 4
+0:0/0 = 0
+0:0/0/terrain_set = 0
+
+[sub_resource type="TileSet" id="TileSet_e5xex"]
+tile_shape = 3
+tile_layout = 1
+tile_size = Vector2i(122, 141)
+terrain_set_0/mode = 2
+terrain_set_0/terrain_0/name = "floor"
+terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
+terrain_set_0/terrain_1/name = "forest"
+terrain_set_0/terrain_1/color = Color(0.317859, 0.500055, 0.211517, 1)
+sources/2 = SubResource("TileSetAtlasSource_mlwg2")
+sources/3 = SubResource("TileSetAtlasSource_nu2co")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r4n4x"]
+texture = ExtResource("4_fnnsx")
+texture_region_size = Vector2i(122, 141)
+0:0/next_alternative_id = 3
+0:0/0 = 0
+0:0/1 = 1
+0:0/1/modulate = Color(0.8, 0.633333, 0.4, 0.784314)
+
+[sub_resource type="TileSet" id="TileSet_e56a2"]
+tile_shape = 3
+tile_layout = 1
+tile_size = Vector2i(122, 141)
+sources/0 = SubResource("TileSetAtlasSource_r4n4x")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x077e"]
+texture = ExtResource("4_fnnsx")
+texture_region_size = Vector2i(122, 141)
+0:0/next_alternative_id = 2
+0:0/0 = 0
+0:0/1 = 1
+0:0/1/modulate = Color(0.666667, 0.8, 0.4, 0.784314)
+
+[sub_resource type="TileSet" id="TileSet_50843"]
+tile_shape = 3
+tile_layout = 1
+tile_size = Vector2i(122, 141)
+sources/0 = SubResource("TileSetAtlasSource_x077e")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nxasj"]
+texture = ExtResource("4_fnnsx")
+texture_region_size = Vector2i(122, 141)
+0:0/next_alternative_id = 2
+0:0/0 = 0
+0:0/1 = 1
+0:0/1/modulate = Color(0.473333, 0.8, 0.4, 0.784314)
+
+[sub_resource type="TileSet" id="TileSet_22msg"]
+tile_shape = 3
+tile_layout = 1
+tile_size = Vector2i(122, 141)
+sources/0 = SubResource("TileSetAtlasSource_nxasj")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yqus8"]
+texture = ExtResource("4_fnnsx")
+texture_region_size = Vector2i(122, 141)
+0:0/next_alternative_id = 2
+0:0/0 = 0
+0:0/1 = 1
+0:0/1/modulate = Color(0.65, 0.433333, 0.325, 0.784314)
+
+[sub_resource type="TileSet" id="TileSet_rcdwb"]
+tile_shape = 3
+tile_layout = 1
+tile_size = Vector2i(122, 141)
+sources/0 = SubResource("TileSetAtlasSource_yqus8")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2f5fk"]
+texture = ExtResource("4_fnnsx")
+texture_region_size = Vector2i(122, 141)
+0:0/next_alternative_id = 2
+0:0/0 = 0
+0:0/1 = 1
+0:0/1/modulate = Color(0.4, 0.666667, 0.8, 0.784314)
+
+[sub_resource type="TileSet" id="TileSet_xwhk5"]
+tile_shape = 3
+tile_layout = 1
+tile_size = Vector2i(122, 141)
+sources/0 = SubResource("TileSetAtlasSource_2f5fk")
+
+[sub_resource type="Resource" id="Resource_pvmly"]
+script = ExtResource("8_3uwp8")
+health = 1
+movement = 4
+armor = 0
+texture = ExtResource("9_rnsfh")
+
+[sub_resource type="Resource" id="Resource_r2igu"]
+script = ExtResource("8_3uwp8")
+health = 2
+movement = 4
+armor = 0
+texture = ExtResource("10_m5cf4")
+
+[sub_resource type="Resource" id="Resource_8wxu7"]
+script = ExtResource("11_you7x")
+param_arr = Array[ExtResource("8_3uwp8")]([SubResource("Resource_pvmly"), SubResource("Resource_r2igu")])
+
+[sub_resource type="Resource" id="Resource_cfuoi"]
+script = ExtResource("8_3uwp8")
+health = 1
+movement = 6
+armor = 3
+texture = ExtResource("9_15mpo")
+
+[sub_resource type="Resource" id="Resource_ov2fi"]
+script = ExtResource("8_3uwp8")
+health = 2
+movement = 6
+armor = 3
+texture = ExtResource("10_arunr")
+
+[sub_resource type="Resource" id="Resource_u4u05"]
+script = ExtResource("11_you7x")
+param_arr = Array[ExtResource("8_3uwp8")]([SubResource("Resource_cfuoi"), SubResource("Resource_ov2fi")])
+
+[node name="Game" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.0
+drag_top_margin = 0.0
+drag_right_margin = 0.0
+drag_bottom_margin = 0.0
+script = ExtResource("1_kc0ss")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_n021a")
+centered = false
+
+[node name="HexMap" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+visible = false
+position = Vector2(31.225, 63.695)
+tile_set = SubResource("TileSet_e5xex")
+script = ExtResource("5_b1ec5")
+
+[node name="Floor" type="TileMapLayer" parent="HexMap"]
+tile_map_data = PackedByteArray("AAAEAAIAAAAAAAAAAQAEAAEAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAMAAAAAAAAAAQAFAAIAAAAAAAAAAQAGAAIAAAAAAAAAAQAHAAIAAAAAAAAAAQAIAAIAAAAAAAAAAQABAAIAAAAAAAAAAQACAAMAAAAAAAAAAQAFAAEAAAAAAAAAAQA=")
+tile_set = SubResource("TileSet_e56a2")
+
+[node name="Forest" type="TileMapLayer" parent="HexMap"]
+tile_map_data = PackedByteArray("AAD//wAAAAAAAAAAAQAAAP//AAAAAAAAAQAAAAAAAAAAAAAAAQABAAAAAAAAAAAAAQAAAAEAAAAAAAAAAQABAAEAAAAAAAAAAQACAAEAAAAAAAAAAQACAAIAAAAAAAAAAQADAAIAAAAAAAAAAQADAAMAAAAAAAAAAQACAAQAAAAAAAAAAQABAAQAAAAAAAAAAQADAAQAAAAAAAAAAQAEAAMAAAAAAAAAAQAEAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQACAAUAAAAAAAAAAQADAAUAAAAAAAAAAQAEAAUAAAAAAAAAAQAFAAUAAAAAAAAAAQAGAAUAAAAAAAAAAQAHAAUAAAAAAAAAAQAIAAUAAAAAAAAAAQAHAAQAAAAAAAAAAQAHAAMAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAQAAAAAAAAAAQADAAEAAAAAAAAAAQAJAAUAAAAAAAAAAQABAAUAAAAAAAAAAQAJAAEAAAAAAAAAAQA=")
+tile_set = SubResource("TileSet_50843")
+
+[node name="DenseForest" type="TileMapLayer" parent="HexMap"]
+tile_map_data = PackedByteArray("AAAJAAMAAAAAAAAAAQAGAAQAAAAAAAAAAQA=")
+tile_set = SubResource("TileSet_22msg")
+
+[node name="City" type="TileMapLayer" parent="HexMap"]
+tile_map_data = PackedByteArray("AAAEAAIAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAMAAAAAAAAAAQAFAAIAAAAAAAAAAQAGAAIAAAAAAAAAAQAHAAIAAAAAAAAAAQA=")
+tile_set = SubResource("TileSet_rcdwb")
+
+[node name="Sea" type="TileMapLayer" parent="HexMap"]
+tile_map_data = PackedByteArray("AAABAP//AAAAAAAAAQACAP//AAAAAAAAAQACAAAAAAAAAAAAAQADAP//AAAAAAAAAQADAAAAAAAAAAAAAQAEAP//AAAAAAAAAQAEAAAAAAAAAAAAAQAFAP//AAAAAAAAAQAFAAAAAAAAAAAAAQAGAAEAAAAAAAAAAQAGAAAAAAAAAAAAAQAGAP//AAAAAAAAAQAHAAAAAAAAAAAAAQAHAAEAAAAAAAAAAQAIAAEAAAAAAAAAAQAIAAAAAAAAAAAAAQAIAP//AAAAAAAAAQAHAP//AAAAAAAAAQAJAP//AAAAAAAAAQAAAAUAAAAAAAAAAQD//wQAAAAAAAAAAQAAAAMAAAAAAAAAAQD//wMAAAAAAAAAAQD//wUAAAAAAAAAAQD//wIAAAAAAAAAAQD//wEAAAAAAAAAAQAAAAIAAAAAAAAAAQABAAMAAAAAAAAAAQAAAAQAAAAAAAAAAQD/////AAAAAAAAAQA=")
+tile_set = SubResource("TileSet_xwhk5")
+
+[node name="Pieces" type="Node2D" parent="."]
+
+[node name="0" type="Node2D" parent="Pieces"]
+script = ExtResource("6_7vvpu")
+
+[node name="0" parent="Pieces/0" instance=ExtResource("7_dmvoh")]
+position = Vector2(456, 240)
+planes = SubResource("Resource_8wxu7")
+
+[node name="1" type="Node2D" parent="Pieces"]
+script = ExtResource("12_u5c2c")
+
+[node name="0" parent="Pieces/1" instance=ExtResource("13_bce24")]
+position = Vector2(152, 136)
+planes = SubResource("Resource_u4u05")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Run" type="Button" parent="CanvasLayer"]
+offset_left = 448.0
+offset_top = 24.0
+offset_right = 520.0
+offset_bottom = 55.0
+text = "战斗结算"
+
+[node name="End" type="Button" parent="CanvasLayer"]
+offset_left = 320.0
+offset_top = 24.0
+offset_right = 424.0
+offset_bottom = 55.0
+text = "结束当前阶段"
+
+[node name="Host" type="CheckButton" parent="CanvasLayer"]
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 104.0
+offset_bottom = 55.0
+text = "主机"
+
+[node name="Start" type="Button" parent="CanvasLayer"]
+offset_left = 224.0
+offset_top = 24.0
+offset_right = 296.0
+offset_bottom = 55.0
+text = "开始游戏"
+
+[node name="Faction" type="CheckButton" parent="CanvasLayer"]
+offset_left = 120.0
+offset_top = 24.0
+offset_right = 200.0
+offset_bottom = 55.0
+text = "阵营"

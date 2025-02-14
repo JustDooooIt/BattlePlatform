@@ -1,0 +1,22 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="ChessCreator"
+run/main_scene="res://scenes/game_copy.tscn"
+config/features=PackedStringArray("4.3", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+GameController="*res://scripts/game/game_controller.gd"
+BattleController="*res://scripts/game/battle_controller.gd"
+Discussion="*res://scripts/github/disscussion.gd"

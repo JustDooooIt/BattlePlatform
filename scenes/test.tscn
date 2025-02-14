@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://8lcr4s0la0uf"]
+
+[ext_resource type="Texture2D" uid="uid://bwk3kpifl4aug" path="res://icon.svg" id="1_msm6n"]
+
+[sub_resource type="GDScript" id="GDScript_lofs7"]
+script/source = "extends Area2D
+
+func _input_event(viewport: Viewport, event: InputEvent, shape_idx: int) -> void:
+	print(viewport)
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8jchi"]
+size = Vector2(128, 128)
+
+[node name="Test" type="Node2D"]
+
+[node name="Icon" type="Sprite2D" parent="."]
+texture = ExtResource("1_msm6n")
+
+[node name="Area2D" type="Area2D" parent="Icon"]
+script = SubResource("GDScript_lofs7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Icon/Area2D"]
+shape = SubResource("RectangleShape2D_8jchi")

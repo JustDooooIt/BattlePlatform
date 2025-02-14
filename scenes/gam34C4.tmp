@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3 uid="uid://doai0etxd37rt"]
+
+[ext_resource type="Script" path="res://scripts/camera.gd" id="1_p4jxd"]
+[ext_resource type="Script" path="res://scripts/game/game.gd" id="1_r4ote"]
+[ext_resource type="Texture2D" uid="uid://cq0i76wg1k7um" path="res://resources/map/N44 Map-2015-FINAL-150.jpg" id="2_dsig7"]
+[ext_resource type="Script" path="res://scripts/map/hex_map.gd" id="3_5qlku"]
+
+[sub_resource type="TileSet" id="TileSet_e5xex"]
+tile_shape = 3
+tile_layout = 1
+tile_size = Vector2i(122, 141)
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_r4ote")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.0
+drag_top_margin = 0.0
+drag_right_margin = 0.0
+drag_bottom_margin = 0.0
+script = ExtResource("1_p4jxd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_dsig7")
+centered = false
+
+[node name="HexMap" type="TileMapLayer" parent="."]
+position = Vector2(31, 105)
+tile_set = SubResource("TileSet_e5xex")
+script = ExtResource("3_5qlku")

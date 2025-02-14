@@ -1,0 +1,66 @@
+[gd_scene load_steps=14 format=3 uid="uid://doai0etxd37rt"]
+
+[ext_resource type="Script" path="res://scripts/camera.gd" id="1_p4jxd"]
+[ext_resource type="Script" path="res://scripts/game/game.gd" id="1_r4ote"]
+[ext_resource type="Texture2D" uid="uid://cq0i76wg1k7um" path="res://resources/map/N44 Map-2015-FINAL-150.jpg" id="2_dsig7"]
+[ext_resource type="Script" path="res://scripts/map/hex_map.gd" id="3_5qlku"]
+[ext_resource type="Texture2D" uid="uid://b3bg1ndagmj3y" path="res://resources/BR-27A-1813.png" id="5_4tsif"]
+[ext_resource type="PackedScene" uid="uid://bvsavfcl07m8s" path="res://scenes/piece.tscn" id="5_yyq2f"]
+[ext_resource type="Script" path="res://scripts/game/pieces/paramter.gd" id="7_237bu"]
+[ext_resource type="Texture2D" uid="uid://bgtlbp7xr0ym0" path="res://resources/BR-8A-47RDG-B.png" id="8_g1vs0"]
+[ext_resource type="Script" path="res://scripts/game/pieces/parameters.gd" id="9_v2p37"]
+
+[sub_resource type="TileSet" id="TileSet_e5xex"]
+tile_shape = 3
+tile_layout = 1
+tile_size = Vector2i(122, 141)
+
+[sub_resource type="Resource" id="Resource_1i1ii"]
+script = ExtResource("7_237bu")
+health = 2
+movement = 6
+armor = 3
+texture = ExtResource("8_g1vs0")
+
+[sub_resource type="Resource" id="Resource_oxvum"]
+script = ExtResource("7_237bu")
+health = 1
+movement = 6
+armor = 3
+texture = ExtResource("5_4tsif")
+
+[sub_resource type="Resource" id="Resource_71a34"]
+script = ExtResource("9_v2p37")
+param_arr = Array[ExtResource("7_237bu")]([SubResource("Resource_1i1ii"), SubResource("Resource_oxvum")])
+
+[node name="Game" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.0
+drag_top_margin = 0.0
+drag_right_margin = 0.0
+drag_bottom_margin = 0.0
+script = ExtResource("1_p4jxd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_dsig7")
+centered = false
+
+[node name="HexMap" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+position = Vector2(31.64, 63.095)
+tile_set = SubResource("TileSet_e5xex")
+script = ExtResource("3_5qlku")
+
+[node name="GameController" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("1_r4ote")
+
+[node name="0" type="Node2D" parent="GameController"]
+
+[node name="0" parent="GameController/0" instance=ExtResource("5_yyq2f")]
+position = Vector2(154, 134)
+planes = SubResource("Resource_71a34")

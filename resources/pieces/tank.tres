@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Parameter" load_steps=2 format=3 uid="uid://dhyommt48pxxh"]
+
+[ext_resource type="Script" path="res://scripts/game/pieces/base/paramter.gd" id="1_e2w0g"]
+
+[resource]
+script = ExtResource("1_e2w0g")
+health = 2
+movement = 6
+armor = 3
+texture = Array[Texture]([null])

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://c6lwtcr08mudq"]
+
+[ext_resource type="Script" path="res://scripts/game/pieces/fake_piece.gd" id="1_h6b7p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3ftfj"]
+size = Vector2(84, 84)
+
+[node name="0" type="Sprite2D"]
+position = Vector2(459, 240)
+script = ExtResource("1_h6b7p")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_3ftfj")
