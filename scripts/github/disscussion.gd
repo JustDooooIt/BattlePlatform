@@ -103,13 +103,13 @@ var query_public_key_command: String = \
 		}
 	}"
 
+var http: HTTPClient = HTTPClient.new()
+
 var repo = 'BattlePlatform'
 var repo_owner = 'JustDooooIt'
 var request_queue: Array[Command] = []
 
 func _ready() -> void:
-	base_url = 'https://api.github.com'
-	super._ready()
 	while true:
 		if request_queue.size() > 0:
 			var command: Command = request_queue.pop_front()
@@ -117,6 +117,9 @@ func _ready() -> void:
 			var data = await callable.call()
 			command.awaiter.emit_signal('callable_completed', data)
 		await get_tree().create_timer(2.5).timeout
+
+func http_client_connect():
+	await connect_to_github(http)
 
 func execute_graphql(params: Dictionary) -> PackedByteArray:
 	return await execute(self.http, HTTPClient.Method.METHOD_POST, '/graphql', headers, params)
@@ -128,7 +131,8 @@ func query_comments(number: int, last: int = 1) -> Dictionary:
 	var result = await execute_graphql(body)
 	return JSON.parse_string(result.get_string_from_utf8())
 
-func query_pending_comments(number: int, count: int = 1) -> Array[Dictionary]:
+func query_battle_comments(player_faction:int, number: int, count: int = 1) -> Array[Dictionary]:
+	await http_client_connect()
 	var command: String = query_pending_comments_command
 	var variables = { 'number': number, 'last': count }
 	var body = { 'query': command, 'variables': variables }
@@ -141,45 +145,57 @@ func query_pending_comments(number: int, count: int = 1) -> Array[Dictionary]:
 		has_pre = dict['data']['repository']['discussion']['comments']['pageInfo']['hasPreviousPage']
 		body['variables']['before'] = cursor
 		arr.append_array(dict['data']['repository']['discussion']['comments']['nodes'])
-	return arr.filter(func(e): 
-		var json_str: String = e['data']['repository']['discussion']['comments']['nodes']['body']
-		var dict: Dictionary = JSON.parse_string(json_str)
-		return dict['is_pending']
+	http.close()
+	return arr.filter(
+		func(e): 
+			var dict: Dictionary = JSON.parse_string(e['body'])
+			return dict['faction'] != player_faction and dict.has('type') and dict['type'] == COMMENT_TYPE_BATTLE
 	)
 
 func create_discussion() -> Dictionary:
+	await http_client_connect()
 	var command: String = create_discussion_command
 	var variables = { 'title': 'battle-room-%s' % str(Time.get_unix_time_from_system()) }
 	var body = { 'query': command, 'variables': variables }
 	var result = (await execute_graphql(body))
+	http.close()
 	return JSON.parse_string(result.get_string_from_utf8())
 	
 func query_repository() -> Dictionary:
+	await http_client_connect()
 	var command: String = query_repository_command
 	var body = { 'query': command }
 	var result = await execute_graphql(body)
+	http.close()
 	return JSON.parse_string(result.get_string_from_utf8())
 
 func create_discussion_id() -> String:
+	await http_client_connect()
 	var str = await create_discussion()
 	var dict: Dictionary = JSON.parse_string(str)
+	http.close()
 	return dict['data']['createDiscussion']['discussion']['id']
 	
 func create_discussion_number() -> int:
+	await http_client_connect()
 	var str = await create_discussion()
 	var dict: Dictionary = JSON.parse_string(str)
+	http.close()
 	return dict['data']['createDiscussion']['discussion']['number']
 	
 func create_comment(discussionId: String, content: String) -> Dictionary:
+	await connect_to_github(http)
 	var command: String = create_comment_command
 	var variables = { 'discussionId': discussionId, 'body': content }
 	var body = { 'query': command, 'variables': variables }
 	var result = await execute_graphql(body)
 	var dict_str = result.get_string_from_utf8()
 	var dict = JSON.parse_string(dict_str)
+	http.close()
 	return dict
 	
 func query_public_key(faction: int, number: int, await_time: float = 2.5, max_time: float = 30) -> String:
+	await connect_to_github(http)
 	var command: String = query_public_key_command
 	var variables = { 'number': number, 'first': 1 }
 	var body = { 'query': command, 'variables': variables }
@@ -202,9 +218,11 @@ func query_public_key(faction: int, number: int, await_time: float = 2.5, max_ti
 		total_time += await_time
 		if total_time > max_time:
 			break
+	http.close()
 	return ''
 
 func upload_public_key(faction: int, public_key: String):
+	await connect_to_github(http)
 	var file_name = str(Time.get_unix_time_from_system())
 	var dict: Dictionary = {
 		'description': 'upload %s public key' % GameController.github_username,
@@ -221,21 +239,22 @@ func upload_public_key(faction: int, public_key: String):
 	var json_str = res.get_string_from_utf8()
 	var file: Dictionary = JSON.parse_string(json_str)
 	var raw_url = file['files'][file_name]['raw_url']
-	var body = { 'faction': GameController.faction, 'public_key': raw_url }
+	var body = { 'type': COMMENT_TYPE_KEY, 'faction': GameController.faction, 'public_key': raw_url }
 	await create_comment(GameController.discussion_id, JSON.stringify(body))
+	http.close()
 
 func call_once(method: HTTPClient.Method, url: String, headers: PackedStringArray, params: Dictionary = {}) -> PackedByteArray:
-	var http = HTTPClient.new()
+	var _http = HTTPClient.new()
 	var urls = url.split('/', false, 2)
 	var base_url: String = urls[0] + '//' + urls[1]
-	var err = http.connect_to_host(base_url, 443)
+	var err = _http.connect_to_host(base_url, 443)
 	if err == OK:
 		print('Connected to the url.')
 	else:
 		printerr('Failed to connect to the url.')
-	await connect_request(http, HTTPClient.Status.STATUS_CONNECTED)
-	var res = await execute(http, HTTPClient.Method.METHOD_GET, '/' + urls[2], headers, params)
-	http.close()
+	await connect_request(_http)
+	var res = await execute(_http, HTTPClient.Method.METHOD_GET, '/' + urls[2], headers, params)
+	_http.close()
 	return res
 	
 func enqueue(request: Callable) -> Command:
@@ -276,3 +295,8 @@ class Command:
 
 class Awaiter:
 	signal callable_completed(result)
+
+enum {
+	COMMENT_TYPE_BATTLE,
+	COMMENT_TYPE_KEY
+}

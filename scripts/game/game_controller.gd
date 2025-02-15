@@ -8,6 +8,7 @@ var enemy: Network = null
 var pieces: CellStack = CellStack.new()
 var playing_faction: int = 1
 var faction: int = 1
+var is_game_ready: bool = false
 
 var is_host: bool = false
 var github_username: String = 'JustDooooIt'
@@ -28,15 +29,30 @@ func _ready() -> void:
 	get_node('/root/Game/CanvasLayer/Start').pressed.connect(_on_start_pressed)
 
 func create_keys():
-	crypto = Crypto.new()
 	my_key = crypto.generate_rsa(2048)
-	my_private_key = my_key.save_to_string(true)
-	my_public_key = my_key.save_to_string(false)
+	my_private_key = my_key.save_to_string(false)
+	my_public_key = my_key.save_to_string(true)
 
-func sign_data(data: CryptoKey, private_key: String) -> PackedByteArray:
-	var key = crypto.load_rsa(private_key)
-	var signature = crypto.sign(HashingContext.HASH_SHA256, key, data)
+func sign_data(data: String, private_key: String) -> PackedByteArray:
+	var key = CryptoKey.new()
+	key.load_from_string(private_key)
+	var signature = crypto.sign(HashingContext.HASH_SHA256, data.sha256_buffer(), key)
 	return signature
+	
+func verify_signature(data: String, signature: PackedByteArray, public_key: String) -> bool:
+	var key = CryptoKey.new()
+	key.load_from_string(public_key, true)
+	return crypto.verify(HashingContext.HASH_SHA256, data.sha256_buffer(), signature, key)
+
+func encrypt_data(data: PackedByteArray) -> PackedByteArray:
+	var private_key = CryptoKey.new()
+	private_key.load_from_string(self.my_private_key)
+	return Crypto.new().encrypt(private_key, data)
+
+func decrypt_data(data: PackedByteArray) -> PackedByteArray:
+	var public_key = CryptoKey.new()
+	public_key.load_from_string(self.enemy_public_key)
+	return Crypto.new().decrypt(public_key, data)
 
 ## 创建管道,并给全局上下文挂载管道
 func init_pipeline():
@@ -91,15 +107,12 @@ func _on_start_pressed() -> void:
 	else:
 		discussion_id = 'D_kwDON1yf484AeRBk'
 		discussion_number = 7
-		#Discussion.headers[1] = 'Authorization: Bearer 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'
 	enter_room()
 
 func enter_room():
 	create_keys()
 	print('Key created.')
 	var content = { 'faction': faction, 'public_key': my_public_key }
-	if !Discussion.is_github_connected:
-		await Discussion.connected
 	await Discussion.upload_public_key(faction, my_public_key)
 	print('Public key uploaded.')
 	var public_key = await Discussion.query_public_key(faction, discussion_number)
@@ -107,7 +120,9 @@ func enter_room():
 		printerr('The other user`s connection was unsuccessful.')
 	else:
 		enemy_public_key = public_key
+		is_game_ready = true
 		print('The other user`s connection was successful.')
+
 
 ## 友方算子被选中
 func _my_piece_selected(piece: Piece):

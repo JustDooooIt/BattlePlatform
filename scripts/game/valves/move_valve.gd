@@ -21,5 +21,9 @@ func _run(context: ValveContext):
 	comment.target = move_context.target
 	comment.username = GameController.github_username
 	var dict = Discussion.class_to_dict(comment)
-	var callable = Discussion.create_comment.bind(GameController.discussion_id, JSON.stringify(dict))
+	var string = JSON.stringify(dict)
+	var data = GameController.encrypt_data(string.sha256_buffer())
+	var base64 = Marshalls.raw_to_base64(data)
+	var body = JSON.stringify({ 'type': Discussion.COMMENT_TYPE_BATTLE, 'faction': GameController.faction, 'data': base64 })
+	var callable = Discussion.create_comment.bind(GameController.discussion_id, body)
 	Discussion.enqueue(callable)
